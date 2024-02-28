@@ -1,0 +1,18 @@
+success:
+  otpLoginRequest: "Login OTP has been send to registered email address"
+  login: "User logged in successfully"
+
+error:
+  userNotFound: "User not found"
+  standardError: "Something went wrong, please try again later"
+  duplicateEmail: "Email Id already exists"
+  fileNotFound: "File not found"
+  file_limit: "File limit exceeded"
+  otp_expired: "OTP expired"
+  invalidOtp: "Invalid OTP"
+  invalid_token: "Invalid Token"
+  token_expired: "Token expired"
+  invalid_link: "Invalid Link, please try again later"
+  email_not_verified: "Email not verified"
+  passwordError: "Invalid password"
+  alreadyVerified: "Email already verified"
