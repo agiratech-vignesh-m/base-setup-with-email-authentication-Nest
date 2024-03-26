@@ -19,6 +19,8 @@ import { JwtAuthGuard } from 'src/guard/jwt.guard';
 import { Request } from 'express';
 import { createBadgeDto } from './dto/badge.dto';
 import { BadgeService } from '../badge/badge.service';
+import { Web3Service } from '../web3/web3.service';
+import { IWeb3PublicTransfer } from 'src/utils/interface.utils';
 // import { Request } from 'express';
 
 @Controller({
@@ -30,6 +32,7 @@ export class UserController {
     private readonly userService: UserService,
     private readonly configService: ConfigService,
     private readonly badgeService: BadgeService,
+    private readonly web3Service: Web3Service,
   ) {}
 
   @Post('')
@@ -56,5 +59,12 @@ export class UserController {
   getProfile(@Req() request: Request) {
     const data = request.user.profile;
     return this.userService.getProfile(data.id);
+  }
+
+  @Post('web3_check')
+  async web3Check( @Body() body: IWeb3PublicTransfer) {
+    const check = await this.web3Service.publicTransfer(body);
+    console.log('Check', check);
+    return check;
   }
 }

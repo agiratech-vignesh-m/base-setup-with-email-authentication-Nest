@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
-import { Repository } from 'typeorm';
+import { FindOneOptions, In, Repository } from 'typeorm';
 import { error, success } from 'src/config/yaml.config';
 import { Profile } from 'src/entities/profile.entity';
 import { loginDto, signUpDto } from './dto/auth_otp.dto';
@@ -18,6 +18,8 @@ import { MailService } from '../mail/mail.service';
 import { resendOtpDto, verifyOtpDto } from './dto/auth_otp.dto';
 import { eOtpLoginDto } from './dto/auth_email_link.dto';
 import { IJwtConfig, JwtTypeEnum } from 'src/utils/interface.utils';
+import { UserWallet } from 'src/entities/user_wallet.entity';
+import { Organization } from 'src/entities/organization.entity';
 
 @Injectable()
 export class AuthService {
@@ -30,6 +32,10 @@ export class AuthService {
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Profile)
     private readonly profileRepository: Repository<Profile>,
+    @InjectRepository(UserWallet)
+    private readonly userWalletRepository: Repository<UserWallet>,
+    @InjectRepository(Organization)
+    private readonly userOrganizationRepository: Repository<Organization>,
   ) {}
 
   // OTP Based Authentication
@@ -117,9 +123,12 @@ export class AuthService {
             statusCode: HttpStatus.OK,
           };
         }
-        throw new HttpException(error?.otp_expired, HttpStatus.BAD_REQUEST);
+        throw new HttpException(
+          error?.otp?.otp_expired,
+          HttpStatus.BAD_REQUEST,
+        );
       } else {
-        throw new HttpException(error?.invalidOtp, HttpStatus.BAD_REQUEST);
+        throw new HttpException(error?.otp?.invalidOtp, HttpStatus.BAD_REQUEST);
       }
     } catch (error) {
       console.log('Error', error.response);
@@ -131,7 +140,7 @@ export class AuthService {
     const user = await this.findByEmail(data.email);
     console.log('User', user);
 
-    if(user.email_verified){
+    if (user.email_verified) {
       throw new HttpException(error?.alreadyVerified, HttpStatus.BAD_REQUEST);
     }
 
@@ -155,7 +164,7 @@ export class AuthService {
     }
 
     return {
-      message: 'OTP successfully send to registered email address',
+      message: success?.otpSend,
       statusCode: HttpStatus.OK,
     };
   }
@@ -173,9 +182,12 @@ export class AuthService {
         );
       }
 
-      const validate_password = await comparePassword(data.password, validate_user.password);
+      const validate_password = await comparePassword(
+        data.password,
+        validate_user.password,
+      );
 
-      if(!validate_password){
+      if (!validate_password) {
         throw new HttpException(error?.passwordError, HttpStatus.BAD_REQUEST);
       }
 
@@ -317,10 +329,8 @@ export class AuthService {
   async findByEmail(email: string): Promise<any> {
     let query: any = {};
     query.email = email;
-    const user = await this.usersRepository.findOne({
-      where: query,
-      relations: ['profile'],
-    });
+    const user = await this.usersRepository.findOne(query);
+    console.log('User', user);
     // if found return error
     if (!user) {
       throw new HttpException(error?.userNotFound, HttpStatus.BAD_REQUEST);
@@ -435,4 +445,67 @@ export class AuthService {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
+
+  async getUserWallet(userId: string): Promise<any> {
+    const user = await this.userWalletRepository.findOne({
+      where: {},
+      relations: ['organizations'],
+    });
+
+    return user;
+  }
+
+  async createUserWallet(data: any): Promise<any> {
+    try {
+      console.log('Entering service');
+
+      const user = await this.userWalletRepository.findOne({
+        where: { id: data.userId },
+        relations: ['organizations'],
+      });
+
+      console.log('user', user);
+
+      // if (user && user.organizations.some(org => org.org_name === data?.org)) {
+      //   // User is registered under the specified organization
+      //   throw new Error("User Id already registered under the organization");
+      // }
+
+      const user_data = {
+        cret: '',
+        pk: '',
+      };
+      const organization = new Organization();
+      organization.org_name = data.org;
+      organization.user_data = user_data.toString();
+
+      const newUser = await this.userWalletRepository.findOne({
+        where: { id: data.userId },
+        relations: ['organizations'],
+      });
+
+      if (!newUser) {
+        const userWallet: any = new UserWallet();
+        (userWallet.id = data.userId),
+          (userWallet.organizations = [organization]);
+
+        console.log('userWallet', userWallet);
+        const saveUser = await this.userWalletRepository.save(
+          data.userId,
+          userWallet,
+        );
+        console.log('saveUser', saveUser);
+        return saveUser;
+      } else {
+      }
+    } catch (error) {
+      console.log('Error', error);
+    }
+  }
 }
+
+// find
+// findone
+// update
+// remove
+// save

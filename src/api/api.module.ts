@@ -11,6 +11,7 @@ import { Profile } from 'src/entities/profile.entity';
 import { User } from 'src/entities/user.entity';
 import { Badge } from 'src/entities/badge.entity';
 import { Admin } from 'src/entities/admin.entity';
+import { Web3Service } from './web3/web3.service';
 
 @Module({
   imports: [
@@ -27,6 +28,6 @@ import { Admin } from 'src/entities/admin.entity';
     UploadModule],
   exports: [],
   // If other modules uses the common serive then we need to declare it here
-  providers: [MailService, BadgeService],
+  providers: [MailService, BadgeService, Web3Service],
 })
 export class ApiModule {}

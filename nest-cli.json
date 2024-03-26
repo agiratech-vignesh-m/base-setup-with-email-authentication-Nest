@@ -4,6 +4,9 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true,
-    "assets": [{ "include": "/config/*.yaml" }, { "include": "/types/*.d.ts" }]
+    "assets": [
+      { "include": "/config/*.yaml" }, 
+      { "include": "/types/*.d.ts" },
+      { "include": "/api/web3/abi/*.json" } ]
   }
 }

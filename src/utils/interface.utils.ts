@@ -16,3 +16,16 @@ export interface IBadgeDetails {
   name: string,
   image: string
 }
+
+// Ethereum
+export interface IWeb3 {
+  provider: string;
+  mnemonic: string;
+  privateKey: string;
+  publicKey: string;
+}
+
+export interface IWeb3PublicTransfer {
+  wallet_address: string;
+  amount: number;
+}

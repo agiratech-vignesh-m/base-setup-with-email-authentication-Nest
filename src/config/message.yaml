@@ -1,6 +1,7 @@
 success:
   otpLoginRequest: "Login OTP has been send to registered email address"
   login: "User logged in successfully"
+  otpSend: 'OTP successfully send to registered email address'
 
 error:
   userNotFound: "User not found"
@@ -8,8 +9,9 @@ error:
   duplicateEmail: "Email Id already exists"
   fileNotFound: "File not found"
   file_limit: "File limit exceeded"
-  otp_expired: "OTP expired"
-  invalidOtp: "Invalid OTP"
+  otp:
+    otp_expired: "OTP expired"
+    invalidOtp: "Invalid OTP"
   invalid_token: "Invalid Token"
   token_expired: "Token expired"
   invalid_link: "Invalid Link, please try again later"

@@ -12,6 +12,7 @@ import { Profile } from 'src/entities/profile.entity';
 import { AuthModule } from '../auth/auth.module';
 import { Badge } from 'src/entities/badge.entity';
 import { BadgeService } from '../badge/badge.service';
+import { Web3Service } from '../web3/web3.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Profile, Badge]),
@@ -23,7 +24,8 @@ import { BadgeService } from '../badge/badge.service';
   providers: [
     UserService,
     MailService,
-    BadgeService
+    BadgeService,
+    Web3Service
   ],
   exports: [UserService]
 })

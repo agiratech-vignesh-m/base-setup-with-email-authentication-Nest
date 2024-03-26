@@ -19,6 +19,7 @@ import { eOtpLoginDto } from './dto/auth_email_link.dto';
 import { AuthGuard } from 'src/guard/auth.guard';
 import { JwtAuthGuard } from 'src/guard/jwt.guard';
 import { Request } from 'express';
+import { UserRegisterDto } from './dto/wallet.dto';
 
 @Controller({
   version: ["1"],
@@ -79,6 +80,13 @@ export class AuthController {
     const data = request.user
     return this.authService.getUser(data.id)
   }
+
+   // Otp Based Authentication
+   @HttpCode(HttpStatus.OK)
+   @Post('createUserWallet')
+   createUserWallet(@Body() data: UserRegisterDto) {
+     return this.authService.createUserWallet(data);
+   }
 
   // @Post('forgot_password')
   // login(@Body() authPyload: AuthPayloadDto) {

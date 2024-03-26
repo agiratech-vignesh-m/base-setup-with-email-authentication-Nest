@@ -7,6 +7,16 @@ export default () => ({
     password: process.env.DB_SECRET,
     dbname: process.env.DB_NAME,
   },
+  web3:
+  {
+    provider: process.env.WEB3_PROVIDER,
+    private_key: process.env.PRIVATE_KEY,
+    public_key: process.env.PUBLIC_KEY,
+  },
+  contract: {
+    token: process.env.TOKEN_CONTRACT,
+    registration: process.env.REGISTRATION_CONTRACT
+  },  
   email_host: process.env.EMAIL_HOST,
   email_port: process.env.EMAIL_PORT,
   email_secured: process.env.EMAIL_SECURE == "true" ? true : false,
